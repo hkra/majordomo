@@ -1,0 +1,3 @@
+# majordomo
+
+Feathery home automation.
