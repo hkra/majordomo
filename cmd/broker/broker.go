@@ -2,29 +2,34 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
+	"os"
+
+	"github.com/hkra/majordomo/cmd/broker/app"
+	"github.com/hkra/majordomo/cmd/broker/app/options"
 )
 
-// Options is a container for environment values and program parameters.
-type Options struct {
-	Port uint
-	Help bool
-}
+func parseProgramFlags(flags *flag.FlagSet) *options.Options {
+	var env = options.Options{}
+	env.BindFlags(flags)
 
-var env = new(Options)
+	args := os.Args[1:]
+	if err := flags.Parse(args); err != nil {
+		log.Fatal("Flag parsing failed", args)
+	}
 
-func init() {
-	flag.BoolVar(&env.Help, "help", false, "Print this help message.")
-	flag.BoolVar(&env.Help, "h", false, "Print this help message.")
-	flag.UintVar(&env.Port, "port", 3202, "Port to listen on.")
-	flag.Parse()
+	if env.Help {
+		fmt.Printf("Usage: %s\n", os.Args[0])
+		flags.Usage()
+		os.Exit(0)
+	}
+
+	return &env
 }
 
 func main() {
-	if env.Help {
-		flag.Usage()
-		return
-	}
-
-	log.Printf("Starting majordomo command broker on port [%d]", env.Port)
+	server := &app.APIServer{}
+	server.Config(parseProgramFlags(flag.NewFlagSet("broker", flag.ExitOnError)))
+	server.Start()
 }
