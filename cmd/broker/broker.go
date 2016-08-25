@@ -29,7 +29,7 @@ func parseProgramFlags(flags *flag.FlagSet) *options.Options {
 }
 
 func main() {
-	server := &app.APIServer{}
-	server.Config(parseProgramFlags(flag.NewFlagSet("broker", flag.ExitOnError)))
+	flags := parseProgramFlags(flag.NewFlagSet("broker", flag.ExitOnError))
+	server := app.New(flags)
 	server.Start()
 }

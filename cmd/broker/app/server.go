@@ -2,22 +2,32 @@
 package app
 
 import (
-	"log"
-
 	"github.com/hkra/majordomo/cmd/broker/app/options"
+	"github.com/hkra/majordomo/pkg/apiserver"
 )
 
-// APIServer groups configuration and components for the app API server.
-type APIServer struct {
-	Port uint
+// BrokerServer is the command broker API server.
+type BrokerServer struct {
+	apiserver *apiserver.APIServer
 }
 
-// Config configures an APIServer using the values from an Options object.
-func (s *APIServer) Config(options *options.Options) {
-	s.Port = options.Port
+func configureAPIServer(options *options.Options) *apiserver.Config {
+	c := &apiserver.Config{
+		Name: "command broker",
+		Port: options.Port,
+	}
+	return c
+}
+
+// New makes a new BrokerServer.
+func New(options *options.Options) *BrokerServer {
+	b := BrokerServer{
+		apiserver: apiserver.New(configureAPIServer(options)),
+	}
+	return &b
 }
 
 // Start runs the server and starts listening.
-func (s *APIServer) Start() {
-	log.Printf("Starting majordomo command broker on port [%d]", s.Port)
+func (s *BrokerServer) Start() {
+	s.apiserver.Start()
 }
