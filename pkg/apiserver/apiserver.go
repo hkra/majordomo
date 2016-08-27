@@ -9,7 +9,7 @@ import (
 	"log"
 	"net/http"
 
-	restful "github.com/emicklei/go-restful"
+	"github.com/emicklei/go-restful"
 )
 
 // Config contains API server configuration.
