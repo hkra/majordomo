@@ -33,8 +33,10 @@ func New(config *Config) *APIServer {
 	s := &APIServer{
 		config:           config,
 		mux:              http.NewServeMux(),
-		restfulContainer: &restful.Container{},
+		restfulContainer: restful.NewContainer(),
 	}
+
+	s.restfulContainer.Router(restful.CurlyRouter{})
 
 	// Setup CORS filter.
 	s.restfulContainer.Filter(restful.CrossOriginResourceSharing{
@@ -67,4 +69,12 @@ func (s *APIServer) RegisterHandlers(registrationCallback func(*restful.Containe
 // Start runs the server and starts listening.
 func (s *APIServer) Start() {
 	log.Printf("Starting %s on port [%s]", s.config.Name, s.config.Port)
+
+	if s.config.UseTLS {
+		// TODO s.server.ListenAndServeTLS()
+	} else {
+		if s.server.ListenAndServe() != nil {
+			log.Fatal("ListenAndServe failed during API server startup")
+		}
+	}
 }
