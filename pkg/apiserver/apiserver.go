@@ -26,6 +26,7 @@ type APIServer struct {
 	mux              *http.ServeMux
 	server           *http.Server
 	restfulContainer *restful.Container
+	restfulService   *restful.WebService
 }
 
 // New creates a new APIServer instance.
@@ -34,9 +35,15 @@ func New(config *Config) *APIServer {
 		config:           config,
 		mux:              http.NewServeMux(),
 		restfulContainer: restful.NewContainer(),
+		restfulService:   &restful.WebService{},
 	}
 
 	s.restfulContainer.Router(restful.CurlyRouter{})
+	s.restfulContainer.Add(s.restfulService)
+	s.restfulService.
+		ApiVersion("1.0.0").
+		Consumes(restful.MIME_JSON).
+		Produces(restful.MIME_JSON)
 
 	// Setup CORS filter.
 	s.restfulContainer.Filter(restful.CrossOriginResourceSharing{
@@ -62,8 +69,8 @@ func New(config *Config) *APIServer {
 }
 
 // RegisterHandlers calls a callback used to add API route handlers to the restful container.
-func (s *APIServer) RegisterHandlers(registrationCallback func(*restful.Container)) {
-	registrationCallback(s.restfulContainer)
+func (s *APIServer) RegisterHandlers(registrationCallback func(*restful.WebService)) {
+	registrationCallback(s.restfulService)
 }
 
 // Start runs the server and starts listening.

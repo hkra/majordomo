@@ -2,6 +2,7 @@
 package app
 
 import (
+	restful "github.com/emicklei/go-restful"
 	"github.com/hkra/majordomo/cmd/broker/app/options"
 	"github.com/hkra/majordomo/pkg/apiserver"
 )
@@ -26,10 +27,15 @@ func New(options *options.Options) *BrokerServer {
 	b := BrokerServer{
 		apiserver: apiserver.New(configureAPIServer(options)),
 	}
+	b.apiserver.RegisterHandlers(registerHandlers)
 	return &b
 }
 
 // Start runs the server and starts listening.
 func (s *BrokerServer) Start() {
 	s.apiserver.Start()
+}
+
+func registerHandlers(container *restful.WebService) {
+
 }
