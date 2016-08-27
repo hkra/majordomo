@@ -8,6 +8,8 @@ import (
 	"crypto/tls"
 	"log"
 	"net/http"
+
+	restful "github.com/emicklei/go-restful"
 )
 
 // Config contains API server configuration.
@@ -20,22 +22,32 @@ type Config struct {
 
 // APIServer groups configuration and components for the app API server.
 type APIServer struct {
-	config *Config
-	mux    *http.ServeMux
-	server *http.Server
+	config           *Config
+	mux              *http.ServeMux
+	server           *http.Server
+	restfulContainer *restful.Container
 }
 
 // New creates a new APIServer instance.
 func New(config *Config) *APIServer {
 	s := &APIServer{
-		config: config,
-		mux:    http.NewServeMux(),
+		config:           config,
+		mux:              http.NewServeMux(),
+		restfulContainer: &restful.Container{},
 	}
 
-	serverAddress := net.JoinHostPort(config.BindAddress, strings.Trim(config.Port, " \t"))
+	// Setup CORS filter.
+	s.restfulContainer.Filter(restful.CrossOriginResourceSharing{
+		AllowedHeaders: []string{"Content-Type", "Accept"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
+		CookiesAllowed: false,
+		Container:      s.restfulContainer,
+	}.Filter)
 
+	serverAddress := net.JoinHostPort(config.BindAddress, strings.Trim(config.Port, " \t"))
 	s.server = &http.Server{
-		Addr: serverAddress,
+		Addr:    serverAddress,
+		Handler: s.restfulContainer,
 	}
 
 	if config.UseTLS {
@@ -45,6 +57,11 @@ func New(config *Config) *APIServer {
 	}
 
 	return s
+}
+
+// RegisterHandlers calls a callback used to add API route handlers to the restful container.
+func (s *APIServer) RegisterHandlers(registrationCallback func(*restful.Container)) {
+	registrationCallback(s.restfulContainer)
 }
 
 // Start runs the server and starts listening.
