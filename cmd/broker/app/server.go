@@ -2,7 +2,7 @@
 package app
 
 import (
-	restful "github.com/emicklei/go-restful"
+	"github.com/emicklei/go-restful"
 	"github.com/hkra/majordomo/cmd/broker/app/options"
 	"github.com/hkra/majordomo/pkg/apiserver"
 )
@@ -36,6 +36,10 @@ func (s *BrokerServer) Start() {
 	s.apiserver.Start()
 }
 
-func registerHandlers(container *restful.WebService) {
+func registerHandlers(ws *restful.WebService) {
+	ws.Route(ws.GET("/").To(testRoute))
+}
 
+func testRoute(request *restful.Request, response *restful.Response) {
+	response.Write([]byte("Hello, server world!"))
 }

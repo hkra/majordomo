@@ -12,6 +12,8 @@ import (
 	"github.com/emicklei/go-restful"
 )
 
+const versionString = "1.0.0"
+
 // Config contains API server configuration.
 type Config struct {
 	Port        string
@@ -39,16 +41,16 @@ func New(config *Config) *APIServer {
 	}
 
 	s.restfulContainer.Router(restful.CurlyRouter{})
-	s.restfulContainer.Add(s.restfulService)
 	s.restfulService.
-		ApiVersion("1.0.0").
+		ApiVersion(versionString).
 		Consumes(restful.MIME_JSON).
 		Produces(restful.MIME_JSON)
+	s.restfulContainer.Add(s.restfulService)
 
 	// Setup CORS filter.
 	s.restfulContainer.Filter(restful.CrossOriginResourceSharing{
 		AllowedHeaders: []string{"Content-Type", "Accept"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		CookiesAllowed: false,
 		Container:      s.restfulContainer,
 	}.Filter)
