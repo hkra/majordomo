@@ -13,8 +13,10 @@ type BrokerServer struct {
 
 func configureAPIServer(options *options.Options) *apiserver.Config {
 	c := &apiserver.Config{
-		Name: "command broker",
-		Port: options.Port,
+		Name:        "command broker",
+		Port:        options.Port,
+		BindAddress: options.BindAddress,
+		UseTLS:      options.UseTLS,
 	}
 	return c
 }

@@ -7,12 +7,15 @@ import (
 )
 
 func configTransfersSettingsFromOptions(t *testing.T) {
-	options := options.Options{
-		Port: 12345,
-	}
-	server := APIServer{}
-	server.Config(&options)
-	if server.Port != 12345 {
+	config := configureAPIServer(&options.Options{
+		Port:        "12345",
+		BindAddress: "localhost",
+		UseTLS:      true,
+	})
+
+	if config.Port != "12345" ||
+		config.BindAddress != "localhost" ||
+		config.UseTLS != true {
 		t.Fail()
 	}
 }
