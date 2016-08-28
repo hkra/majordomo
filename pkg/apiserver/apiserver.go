@@ -81,6 +81,9 @@ func (s *APIServer) Start() {
 
 	if s.config.UseTLS {
 		// TODO s.server.ListenAndServeTLS()
+		// References:
+		//	Cert generation: https://github.com/kubernetes/kubernetes/blob/master/pkg/util/crypto/crypto.go
+		//	TLS setup: https://github.com/kubernetes/kubernetes/blob/master/pkg/genericapiserver/genericapiserver.go
 	} else {
 		if s.server.ListenAndServe() != nil {
 			log.Fatal("ListenAndServe failed during API server startup")
