@@ -13,8 +13,8 @@ describe('App: MajordomoWeb', () => {
       expect(app).toBeTruthy();
     }));
 
-  it('should have as title \'app works!\'',
+  it('should have as title \'Hello, broker world!\'',
     inject([AppComponent], (app: AppComponent) => {
-      expect(app.title).toEqual('app works!');
+      expect(app.title).toEqual('Hello, broker world!');
     }));
 });
