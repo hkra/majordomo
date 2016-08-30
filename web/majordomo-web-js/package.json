@@ -5,6 +5,8 @@
   "dependencies": {},
   "repository": "https://github.com/hkra/majordomo/web/majordomo-web-js",
   "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-environments": "^0.1.1",
     "handlebars": "4.0.5"
   },
   "scripts": {
