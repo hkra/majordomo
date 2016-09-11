@@ -1,6 +1,7 @@
 language: go
 
 before_install:
+  - cd cmd/broker
   - go get -t -v ./...
 
 script:
