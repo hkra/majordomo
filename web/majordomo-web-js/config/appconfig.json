@@ -1,9 +1,0 @@
-{
-    "libs": {
-        "comment": "External libraries that don't require any processing. They will be injected into the index template--individually for dev and bundled and minified for prod.",
-        "scripts": [],
-        "styles": [],
-        "assets": []
-    },
-    "outputDir": "dist"
-} 
